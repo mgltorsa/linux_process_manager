@@ -15,19 +15,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProcessService {
 
-    
-    
-
     public List<UserProcess> getProcesses() {
 
         List<UserProcess> processes = new ArrayList<UserProcess>();
         Runtime runtime = Runtime.getRuntime();
         String command = "ps aux";
         try {
-            
+
             Process process = runtime.exec(command);
             process.waitFor();
-            
+
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             processes = getProcesses(br);
@@ -45,8 +42,13 @@ public class ProcessService {
         String line = null;
 
         try {
+            int commandIndex =  br.readLine().indexOf("COMMAND");
+           
             while ((line = br.readLine()) != null && !line.isEmpty()) {
-                System.out.println(line);
+                
+                UserProcess userProcess = parseUserProcess(line,commandIndex);
+                processes.add(userProcess);
+                System.out.println(userProcess);
             }
             br.close();
         } catch (Exception e) {
@@ -55,24 +57,48 @@ public class ProcessService {
         return processes;
     }
 
-	public String deleteProcess(UserProcess userProcess) {
+    private UserProcess parseUserProcess(String line, int commandIndex) {
+        String[] info = line.split("\\s+");
+        
+        UserProcess userProcess = new UserProcess();        
+        userProcess.setUser(info[0]);
+        userProcess.setPid(info[1]);
+        userProcess.setCpu(info[2]);
+        userProcess.setMem(info[3]);
+        userProcess.setVsz(info[4]);
+        userProcess.setRss(info[5]);
+        userProcess.setTty(info[6]);
+        userProcess.setStat(info[7]);
+        userProcess.setStart(info[8]);
+        userProcess.setTime(info[9]);
+
+        String command = "";
+        for(int i=commandIndex;i<line.length();i++){
+            command+=line.charAt(i);
+        }
+        userProcess.setCommand(command);
+        return userProcess;
+    }
+
+    public String deleteProcess(UserProcess userProcess) {
         Runtime runtime = Runtime.getRuntime();
-        String[] command = new String[] { "/bin/sh", "kill -9 "+userProcess.getPid() };
+        String command = "kill -9 " + userProcess.getPid() ;
         String info = null;
         try {
             Process process = runtime.exec(command);
+            process.waitFor();
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            
-            while((info=br.readLine())!=null &&  !info.isEmpty()){
-                info+= br.readLine();
+
+            while ((info = br.readLine()) != null && !info.isEmpty()) {
+                info += br.readLine();
             }
             return info;
         } catch (Exception e) {
             e.printStackTrace();
-            info="505 - error";
+            info = "505 - error";
         }
 
         return info;
-	}
+    }
 
 }
