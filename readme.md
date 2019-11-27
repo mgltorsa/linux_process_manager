@@ -15,5 +15,5 @@ luego vaya a localhost:puerto/process
 
 ## Soporte:
 
-alejandrobravo0329@gmial.com
-mgltorsa@gmail.com
++ alejandrobravo0329@gmial.com
++ mgltorsa@gmail.com
