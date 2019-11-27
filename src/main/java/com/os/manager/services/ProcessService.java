@@ -28,6 +28,8 @@ public class ProcessService {
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
             processes = getProcesses(br);
+            
+            process.destroy();
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -48,7 +50,7 @@ public class ProcessService {
                 
                 UserProcess userProcess = parseUserProcess(line,commandIndex);
                 processes.add(userProcess);
-                System.out.println(userProcess);
+                
             }
             br.close();
         } catch (Exception e) {
@@ -80,18 +82,26 @@ public class ProcessService {
         return userProcess;
     }
 
-    public String deleteProcess(UserProcess userProcess) {
+    public String deleteProcess(String userProcess) {
         Runtime runtime = Runtime.getRuntime();
-        String command = "kill -9 " + userProcess.getPid() ;
-        String info = null;
+        String command = "kill -9 " + userProcess ;
+        String info = "Response:\n";
         try {
             Process process = runtime.exec(command);
             process.waitFor();
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            while ((info = br.readLine()) != null && !info.isEmpty()) {
-                info += br.readLine();
+            String line = null;
+            while ((line = br.readLine()) != null && !line.isEmpty()) {
+                info += line;
             }
+            
+            int exitValue = process.exitValue();
+            if(exitValue==0) {
+            	info+="successed action";
+            }else {
+            	info+="unsuccessed action";
+            }
+            process.destroy();
             return info;
         } catch (Exception e) {
             e.printStackTrace();

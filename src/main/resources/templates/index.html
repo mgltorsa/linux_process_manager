@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lxmnls:th="https://www.thymeleaf.org">
+<head>
+    <title>Linux</title>
+    <link type="text/css" href="style.css" rel="stylesheet"></link>
+</head>
+<body>
+    <h1> Procesos </h1>
+    <p th:if="${info!=null}" th:text="${info}"></p>
+        <table >
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>PID</th>
+              <th>CPU</th>
+              <th>% Mem</th>
+              <th>Vsz</th>
+              <th>Rss</th>
+              <th>TTY</th>
+              <th>Stat</th>
+              <th>Start</th>
+              <th>Time</th>
+              <th>Command</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="process : ${list}">
+              <td><span th:text="${process.user}"></span></td>
+              <td><span th:text="${process.pid}"></span></td>
+              <td><span th:text="${process.cpu}"></span></td>
+              <td><span th:text="${process.mem}"></span></td>
+              <td><span th:text="${process.vsz}"></span></td>
+              <td><span th:text="${process.rss}"></span></td>
+              <td><span th:text="${process.tty}"></span></td>
+              <td><span th:text="${process.stat}"></span></td>
+              <td><span th:text="${process.start}"></span></td>
+              <td><span th:text="${process.time}"></span></td>
+              <td><span th:text="${process.command}"></span></td>
+              <td><a th:href="@{/remove}+'?pid='+${process.pid}">Kill Process</a></td>
+            </tr>
+            </tbody>
+        </table>
+      
+</body>
+</html>
