@@ -6,7 +6,7 @@ configurado como variable de entorno.
 Luego ejecute el al archivo 
 #### application.sh
 
-En caso de fallo corra los siguientes comandos con una version igual o mayor a java 8
+En caso de fallo corra los siguientes comandos:
 
 java -jar target/manager-0.0.1-SNAPSHOT.jar --server.port={Su puerto de confianza y disponible}
 
